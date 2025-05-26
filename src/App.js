@@ -28,55 +28,69 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-useEffect(() => {
-  if (!user) return;
+  useEffect(() => {
+    if (!user) return;
 
-  const docRef = doc(db, 'users', user.uid);
+    const docRef = doc(db, 'users', user.uid);
 
-  updateDoc(docRef, {
-    lastActive: serverTimestamp()
-  }).catch(console.error);
-
-  const interval = setInterval(() => {
     updateDoc(docRef, {
       lastActive: serverTimestamp()
     }).catch(console.error);
-  }, 300000);
 
-  return () => clearInterval(interval);
+    const interval = setInterval(() => {
+      updateDoc(docRef, {
+        lastActive: serverTimestamp()
+      }).catch(console.error);
+    }, 300000);
 
-}, [user]);
+    return () => clearInterval(interval);
 
-
-
+  }, [user]);
 
   if (loading) return <p>Laddar app...</p>;
 
   return (
-    <Router>
+    <Router basename="/peoplemeets">
       <Navbar user={user} unreadCount={unreadCount} />
-            <div className="app-container">
-      <Routes>
-        <Route path="/conversations" element={user ? <ConversationList currentUser={user} setUnreadCount={setUnreadCount} /> : <Navigate to="/login" />} />
-        <Route path="/chat/:id" element={user ? <Chat currentUser={user} /> : <Navigate to="/login" />} />
-        <Route path="/sok" element={<SearchUsers />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/profile"
-          element={user ? <Navigate to={`/users/${user.uid}`} /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/users"
-          element={user ? <UserList /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/users/:id"
-          element={user ? <UserProfile /> : <Navigate to="/login" />}
-        />
-        <Route path="*" element={<Navigate to={user ? `/users/${user.uid}` : "/login"} />} />
-        <Route path="/verify-email" element={<VerifyEmailNotice />} />
-      </Routes>
+      <div className="app-container">
+        <Routes>
+          {/* Startsida */}
+          <Route
+            path="/"
+            element={user ? <Navigate to={`/users/${user.uid}`} /> : <Navigate to="/login" />}
+          />
+
+          <Route
+            path="/conversations"
+            element={user ? <ConversationList currentUser={user} setUnreadCount={setUnreadCount} /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/chat/:id"
+            element={user ? <Chat currentUser={user} /> : <Navigate to="/login" />}
+          />
+          <Route path="/sok" element={<SearchUsers />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/profile"
+            element={user ? <Navigate to={`/users/${user.uid}`} /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/users"
+            element={user ? <UserList /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/users/:id"
+            element={user ? <UserProfile /> : <Navigate to="/login" />}
+          />
+          <Route path="/verify-email" element={<VerifyEmailNotice />} />
+
+          {/* Fallback för alla andra paths */}
+          <Route
+            path="*"
+            element={<Navigate to={user ? `/users/${user.uid}` : "/login"} />}
+          />
+        </Routes>
       </div>
     </Router>
   );
