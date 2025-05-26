@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from './firebaseConfig';
 import { doc, updateDoc, serverTimestamp } from 'firebase/firestore';
@@ -50,7 +50,8 @@ function App() {
   if (loading) return <p>Laddar app...</p>;
 
   return (
-    <Router basename="/peoplemeets">
+    // Här tar vi bort basename helt och hållet eftersom HashRouter inte behöver det
+    <Router>
       <Navbar user={user} unreadCount={unreadCount} />
       <div className="app-container">
         <Routes>
