@@ -1,7 +1,7 @@
 {
   "name": "my-community",
   "version": "0.1.0",
-  "homepage": "https://github.com/Andreij1990/my-community",
+  "homepage": "https://andreij1990.github.io/my-community",
   "private": true,
   "dependencies": {
     "@giphy/js-fetch-api": "^5.6.0",
